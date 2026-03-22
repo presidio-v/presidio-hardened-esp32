@@ -1,0 +1,14 @@
+version: "0.1.0"
+description: "Hardened security layer for ESP32 – strict TLS, NVS redaction, secure boot enforcement, anomaly detection, and input sanitization"
+url: "https://github.com/presidio-iot/presidio-hardened-esp32"
+repository: "https://github.com/presidio-iot/presidio-hardened-esp32.git"
+targets:
+  - esp32
+  - esp32s2
+  - esp32s3
+  - esp32c3
+  - esp32c6
+  - esp32h2
+dependencies:
+  idf:
+    version: ">=5.0.0"

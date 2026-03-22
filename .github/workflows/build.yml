@@ -1,0 +1,39 @@
+name: ESP-IDF Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [esp32, esp32s2, esp32s3, esp32c3]
+        idf_version: ["v5.1.4", "v5.2.2"]
+
+    container:
+      image: espressif/idf:${{ matrix.idf_version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build test app
+        shell: bash
+        run: |
+          . $IDF_PATH/export.sh
+          cd test_app
+          idf.py set-target ${{ matrix.target }}
+          idf.py build
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.target }}-${{ matrix.idf_version }}
+          path: test_app/build/*.bin
+          retention-days: 7

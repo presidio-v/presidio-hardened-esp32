@@ -1,0 +1,91 @@
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [c-cpp]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended
+
+      - name: Build for CodeQL analysis
+        run: |
+          # CodeQL needs a compile-commands database.
+          # Create a minimal compilation for analysis.
+          mkdir -p build && cd build
+          cat > CMakeLists.txt << 'EOF'
+          cmake_minimum_required(VERSION 3.16)
+          project(presidio_codeql C)
+
+          # Stub out ESP-IDF headers for static analysis
+          add_library(presidio_stubs STATIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/../src/presidio_input.c
+            ${CMAKE_CURRENT_SOURCE_DIR}/../src/presidio_log.c
+          )
+          target_include_directories(presidio_stubs PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/../include
+            ${CMAKE_CURRENT_SOURCE_DIR}/stubs
+          )
+          EOF
+
+          # Create minimal stub headers so the source compiles for analysis
+          mkdir -p stubs/mbedtls stubs
+          cat > stubs/esp_err.h << 'STUBEOF'
+          #ifndef ESP_ERR_H
+          #define ESP_ERR_H
+          typedef int esp_err_t;
+          #define ESP_OK 0
+          #define ESP_ERR_INVALID_ARG 0x102
+          #define ESP_ERR_NO_MEM 0x101
+          #define esp_err_to_name(x) "err"
+          #endif
+          STUBEOF
+
+          cat > stubs/esp_log.h << 'STUBEOF'
+          #ifndef ESP_LOG_H
+          #define ESP_LOG_H
+          #define ESP_LOGE(tag, fmt, ...)
+          #define ESP_LOGW(tag, fmt, ...)
+          #define ESP_LOGI(tag, fmt, ...)
+          #define ESP_LOGD(tag, fmt, ...)
+          #endif
+          STUBEOF
+
+          cat > stubs/esp_timer.h << 'STUBEOF'
+          #ifndef ESP_TIMER_H
+          #define ESP_TIMER_H
+          #include <stdint.h>
+          static inline int64_t esp_timer_get_time(void) { return 0; }
+          #endif
+          STUBEOF
+
+          cmake . && make
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
