@@ -1,0 +1,4 @@
+
+# Local IDE / tooling (never commit)
+.specify/
+.vscode/
