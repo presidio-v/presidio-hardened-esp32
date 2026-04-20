@@ -378,3 +378,10 @@ ESP32, ESP32-S2, ESP32-S3, ESP32-C3, ESP32-C6, ESP32-H2
 ## License
 
 [MIT](LICENSE)
+
+---
+
+## SDLC
+
+This repository is developed under the Presidio hardened-family SDLC:
+<https://github.com/presidio-v/presidio-hardened-docs/blob/main/sdlc/sdlc-report.md>.

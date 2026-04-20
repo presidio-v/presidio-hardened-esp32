@@ -8,44 +8,18 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in `presidio-hardened-esp32`, please report it responsibly.
+Please report security vulnerabilities by opening a private GitHub Security Advisory
+(via the "Security" tab → "Report a vulnerability") rather than a public issue.
 
-**Do NOT open a public GitHub issue for security vulnerabilities.**
+Include:
 
-### How to Report
+- Description of the vulnerability
+- Steps to reproduce
+- Potential impact
+- Suggested fix (if any)
 
-1. **Email**: Send a detailed report to **security@presidio-iot.example** (replace with your actual security contact).
-2. **Include**:
-   - Description of the vulnerability
-   - Steps to reproduce
-   - Affected version(s)
-   - Potential impact assessment
-   - Suggested fix (if any)
-
-### What to Expect
-
-- **Acknowledgment** within 48 hours
-- **Initial assessment** within 5 business days
-- **Fix timeline**: Critical issues patched within 7 days; others within 30 days
-- **Credit**: We will credit reporters in the release notes (unless you prefer anonymity)
-
-### Scope
-
-The following are in scope for security reports:
-
-- Bypass of TLS hardening (weak ciphers accepted when they should be blocked)
-- NVS secret leakage (redacted values appearing in logs)
-- Input sanitization bypass (injection patterns not detected)
-- Anomaly detection evasion
-- Buffer overflows or memory corruption in any Presidio module
-- Secure boot/flash encryption check bypass
-
-### Out of Scope
-
-- Vulnerabilities in ESP-IDF itself (report to [Espressif](https://www.espressif.com/en/security))
-- Vulnerabilities in mbedTLS (report to [ARM mbedTLS](https://github.com/Mbed-TLS/mbedtls/security))
-- Issues requiring physical access to an unprotected device with debug interfaces enabled
-- Denial of service via excessive API calls (expected behavior in embedded context)
+You will receive an acknowledgement within 5 business days. We aim to release a patch
+within 30 days of a confirmed vulnerability.
 
 ## Security Best Practices
 
@@ -57,3 +31,9 @@ When deploying with `presidio-hardened-esp32`:
 4. **Register anomaly handlers** to respond to security events (e.g., disable Wi-Fi after repeated auth failures)
 5. **Review Kconfig** settings before each release build
 6. **Keep dependencies updated** — Dependabot is configured for this repository
+
+## Software Development Lifecycle
+
+This repository is developed under the Presidio hardened-family SDLC. The public report
+— scope, standards mapping, threat-model gates, and supply-chain controls — is at
+<https://github.com/presidio-v/presidio-hardened-docs/blob/main/sdlc/sdlc-report.md>.
