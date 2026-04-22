@@ -2,8 +2,8 @@
 
 > Production-ready security hardening layer for ESP-IDF (pure C component)
 
-[![ESP-IDF Build](https://github.com/presidio-iot/presidio-hardened-esp32/actions/workflows/build.yml/badge.svg)](https://github.com/presidio-iot/presidio-hardened-esp32/actions/workflows/build.yml)
-[![CodeQL](https://github.com/presidio-iot/presidio-hardened-esp32/actions/workflows/codeql.yml/badge.svg)](https://github.com/presidio-iot/presidio-hardened-esp32/actions/workflows/codeql.yml)
+[![ESP-IDF Build](https://github.com/presidio-v/presidio-hardened-esp32/actions/workflows/build.yml/badge.svg)](https://github.com/presidio-v/presidio-hardened-esp32/actions/workflows/build.yml)
+[![CodeQL](https://github.com/presidio-v/presidio-hardened-esp32/actions/workflows/codeql.yml/badge.svg)](https://github.com/presidio-v/presidio-hardened-esp32/actions/workflows/codeql.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](idf_component.yml)
 
@@ -30,14 +30,14 @@ automatically receives strong security defaults — no rewrites needed.
 ```yaml
 dependencies:
   presidio-hardened-esp32:
-    git: https://github.com/presidio-iot/presidio-hardened-esp32.git
+    git: https://github.com/presidio-v/presidio-hardened-esp32.git
     version: "0.1.0"
 ```
 
 **Option B — git submodule**:
 
 ```bash
-git submodule add https://github.com/presidio-iot/presidio-hardened-esp32.git components/presidio-hardened-esp32
+git submodule add https://github.com/presidio-v/presidio-hardened-esp32.git components/presidio-hardened-esp32
 ```
 
 ### 2. Initialize in app_main
