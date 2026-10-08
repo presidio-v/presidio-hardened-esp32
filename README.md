@@ -383,5 +383,8 @@ ESP32, ESP32-S2, ESP32-S3, ESP32-C3, ESP32-C6, ESP32-H2
 
 ## SDLC
 
-This repository is developed under the Presidio hardened-family SDLC:
-<https://github.com/presidio-v/presidio-hardened-docs/blob/main/sdlc/sdlc-report.md>.
+This repository is on the **open-source baseline** of the PRESIDIO hardened-family SDLC
+([report](https://github.com/presidio-v/presidio-hardened-docs/blob/main/sdlc/sdlc-report.md) ·
+[PDF](https://github.com/presidio-v/presidio-hardened-docs/blob/main/sdlc/sdlc-report.pdf)).
+The controls measured for it, and any open gaps, are its row in the
+[applicability matrix](https://github.com/presidio-v/presidio-hardened-docs/blob/main/sdlc/applicability.md).
