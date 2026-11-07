@@ -12,7 +12,7 @@ static const char *TAG = "presidio_nvs";
 
 struct presidio_nvs_handle {
     nvs_handle_t nvs;
-    char         namespace_name[16];
+    char namespace_name[16];
 };
 
 static const char *s_secret_patterns[] = {
@@ -62,7 +62,7 @@ bool presidio_nvs_is_secret_key(const char *key)
 }
 
 static void log_nvs_op(const char *op, const char *ns, const char *key,
-                        const char *value)
+                       const char *value)
 {
 #ifdef CONFIG_PRESIDIO_NVS_REDACTION
     if (presidio_nvs_is_secret_key(key)) {
@@ -98,7 +98,7 @@ esp_err_t presidio_nvs_open(const char *namespace_name,
 
     strncpy(h->namespace_name, namespace_name, sizeof(h->namespace_name) - 1);
     h->namespace_name[sizeof(h->namespace_name) - 1] = '\0';
-    *out_handle = h;
+    *out_handle                                      = h;
 
     presidio_log_event(PRESIDIO_SEV_INFO, "NVS", "Secure NVS namespace opened");
     return ESP_OK;
@@ -128,7 +128,7 @@ esp_err_t presidio_nvs_get_str(presidio_nvs_handle_t handle,
     }
 
     size_t required = 0;
-    esp_err_t err = nvs_get_str(handle->nvs, key, NULL, &required);
+    esp_err_t err   = nvs_get_str(handle->nvs, key, NULL, &required);
     if (err != ESP_OK) {
         return err;
     }
@@ -175,7 +175,7 @@ esp_err_t presidio_nvs_get_blob(presidio_nvs_handle_t handle,
     }
 
     size_t required = 0;
-    esp_err_t err = nvs_get_blob(handle->nvs, key, NULL, &required);
+    esp_err_t err   = nvs_get_blob(handle->nvs, key, NULL, &required);
     if (err != ESP_OK) {
         return err;
     }

@@ -15,12 +15,12 @@ static const char *TAG = "presidio_anomaly";
 
 typedef struct {
     presidio_anomaly_handler_t handler;
-    void                      *ctx;
+    void *ctx;
 } handler_entry_t;
 
-static uint32_t      s_counters[PRESIDIO_ANOMALY_TYPE_MAX];
+static uint32_t s_counters[PRESIDIO_ANOMALY_TYPE_MAX];
 static handler_entry_t s_handlers[PRESIDIO_ANOMALY_TYPE_MAX];
-static bool          s_inited = false;
+static bool s_inited = false;
 
 static const char *anomaly_name(presidio_anomaly_type_t type)
 {
@@ -82,7 +82,7 @@ esp_err_t presidio_anomaly_report(presidio_anomaly_type_t type)
     }
 
     s_counters[type]++;
-    ESP_LOGW(TAG, "Anomaly reported: %s (count=%"PRIu32")",
+    ESP_LOGW(TAG, "Anomaly reported: %s (count=%" PRIu32 ")",
              anomaly_name(type), s_counters[type]);
 
     check_threshold(type);

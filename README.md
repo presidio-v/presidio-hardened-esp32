@@ -4,6 +4,7 @@
 
 [![ESP-IDF Build](https://github.com/presidio-v/presidio-hardened-esp32/actions/workflows/build.yml/badge.svg)](https://github.com/presidio-v/presidio-hardened-esp32/actions/workflows/build.yml)
 [![CodeQL](https://github.com/presidio-v/presidio-hardened-esp32/actions/workflows/codeql.yml/badge.svg)](https://github.com/presidio-v/presidio-hardened-esp32/actions/workflows/codeql.yml)
+[![Lint, Host Tests, Dependency Audit](https://github.com/presidio-v/presidio-hardened-esp32/actions/workflows/ci.yml/badge.svg)](https://github.com/presidio-v/presidio-hardened-esp32/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](idf_component.yml)
 
@@ -363,6 +364,42 @@ idf.py build
 # Flash and run tests
 idf.py -p /dev/ttyUSB0 flash monitor
 ```
+
+### Host unit tests
+
+The pure-logic modules (input sanitization, event log, anomaly counters,
+NVS secret-key classification, TLS cipher-suite allow-list) also build and run
+natively, without ESP-IDF or a board. See [test/host/README.md](test/host/README.md)
+for exactly what is and is not covered.
+
+```bash
+make -C test/host test                                         # Linux: apt install libmbedtls-dev
+make -C test/host test MBEDTLS_CFLAGS=-I/opt/homebrew/include  # macOS: brew install mbedtls
+```
+
+### Lint
+
+```bash
+# clang-format, pinned to the version CI uses
+python3 -m venv .venv-lint
+.venv-lint/bin/pip install --require-hashes --only-binary=:all: -r .github/requirements/clang-format.txt
+git ls-files -z '*.c' '*.h' | xargs -0 .venv-lint/bin/clang-format --dry-run --Werror
+
+# cppcheck: see the "cppcheck" step in .github/workflows/ci.yml for the exact flags
+```
+
+### CI
+
+| Workflow | What it checks |
+|----------|----------------|
+| `build.yml` | ESP-IDF build of the test app for esp32, esp32s2, esp32s3, esp32c3 on IDF v5.1.4 and v5.2.2 |
+| `ci.yml` / lint | cppcheck on `src/` and `include/` (Kconfig defaults) and clang-format against `.clang-format` |
+| `ci.yml` / host-tests | Host unit tests under ASan/UBSan (pure-logic modules only) |
+| `ci.yml` / dependency-audit | Fails if `idf_component.yml` gains a component dependency without an exact version or commit pin. There are none today, so there is nothing for an OSV scan to check; ESP-IDF advisories are tracked upstream |
+| `codeql.yml` | CodeQL `security-extended` on the C sources |
+
+On-device tests (`test/test_presidio.c` and the shared `test/test_*.c` files)
+run only when flashed to a board; CI does not execute them.
 
 ---
 

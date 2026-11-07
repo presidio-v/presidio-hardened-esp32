@@ -19,10 +19,10 @@ typedef enum {
 
 /** Structured security event record. */
 typedef struct {
-    uint32_t            timestamp_ms;
+    uint32_t timestamp_ms;
     presidio_severity_t severity;
-    const char         *module;
-    const char         *message;
+    const char *module;
+    const char *message;
 } presidio_security_event_t;
 
 /**

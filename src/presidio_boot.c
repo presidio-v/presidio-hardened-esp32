@@ -18,7 +18,7 @@ esp_err_t presidio_boot_get_status(presidio_boot_status_t *status)
     }
     memset(status, 0, sizeof(*status));
 
-    status->secure_boot_enabled = esp_secure_boot_enabled();
+    status->secure_boot_enabled      = esp_secure_boot_enabled();
     status->flash_encryption_enabled = esp_flash_encryption_enabled();
 
     /*
@@ -88,10 +88,10 @@ const char *presidio_boot_status_str(void)
 
     snprintf(s_status_buf, sizeof(s_status_buf),
              "secure_boot=%s flash_enc=%s jtag=%s uart_dl=%s",
-             st.secure_boot_enabled       ? "ON" : "OFF",
-             st.flash_encryption_enabled  ? "ON" : "OFF",
-             st.jtag_disabled             ? "disabled" : "enabled",
-             st.uart_download_disabled    ? "disabled" : "enabled");
+             st.secure_boot_enabled ? "ON" : "OFF",
+             st.flash_encryption_enabled ? "ON" : "OFF",
+             st.jtag_disabled ? "disabled" : "enabled",
+             st.uart_download_disabled ? "disabled" : "enabled");
 
     return s_status_buf;
 }

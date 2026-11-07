@@ -118,10 +118,10 @@ const char *presidio_security_status(void)
     pos += snprintf(s_status_buf + pos, sizeof(s_status_buf) - pos,
                     "LOG:on");
 #else
-    (void)pos;
     pos += snprintf(s_status_buf + pos, sizeof(s_status_buf) - pos,
                     "LOG:off");
 #endif
+    (void)pos; /* last increment is intentionally unused */
 
     return s_status_buf;
 }

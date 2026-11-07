@@ -21,7 +21,7 @@ static const int s_approved_suites[] = {
     MBEDTLS_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
     MBEDTLS_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
 #endif
-    0  /* sentinel */
+    0 /* sentinel */
 };
 
 esp_err_t presidio_tls_apply_hardening(mbedtls_ssl_config *conf)

@@ -14,20 +14,20 @@ static const char *TAG = "presidio_log";
 #endif
 
 typedef struct {
-    uint32_t            timestamp_ms;
+    uint32_t timestamp_ms;
     presidio_severity_t severity;
-    char                module[16];
-    char                message[128];
+    char module[16];
+    char message[128];
 } stored_event_t;
 
-static stored_event_t *s_ring     = NULL;
-static int             s_head     = 0;
-static int             s_count    = 0;
-static uint32_t        s_total    = 0;
-static bool            s_inited   = false;
+static stored_event_t *s_ring = NULL;
+static int s_head             = 0;
+static int s_count            = 0;
+static uint32_t s_total       = 0;
+static bool s_inited          = false;
 
-static presidio_log_handler_t s_handler     = NULL;
-static void                  *s_handler_ctx = NULL;
+static presidio_log_handler_t s_handler = NULL;
+static void *s_handler_ctx              = NULL;
 
 static const char *severity_str(presidio_severity_t sev)
 {
@@ -84,8 +84,8 @@ esp_err_t presidio_log_event(presidio_severity_t severity,
 
     if (s_inited && s_ring) {
         stored_event_t *e = &s_ring[s_head];
-        e->timestamp_ms = ts;
-        e->severity     = severity;
+        e->timestamp_ms   = ts;
+        e->severity       = severity;
         strncpy(e->module, module, sizeof(e->module) - 1);
         e->module[sizeof(e->module) - 1] = '\0';
         strncpy(e->message, message, sizeof(e->message) - 1);
@@ -133,10 +133,10 @@ int presidio_log_get_recent(presidio_security_event_t *out_events,
     int start   = (s_head - s_count + RING_SIZE) % RING_SIZE;
 
     int offset = s_count - to_copy;
-    start = (start + offset) % RING_SIZE;
+    start      = (start + offset) % RING_SIZE;
 
     for (int i = 0; i < to_copy; i++) {
-        int idx = (start + i) % RING_SIZE;
+        int idx                    = (start + i) % RING_SIZE;
         out_events[i].timestamp_ms = s_ring[idx].timestamp_ms;
         out_events[i].severity     = s_ring[idx].severity;
         out_events[i].module       = s_ring[idx].module;
@@ -156,10 +156,10 @@ void presidio_log_deinit(void)
         free(s_ring);
         s_ring = NULL;
     }
-    s_head       = 0;
-    s_count      = 0;
-    s_total      = 0;
-    s_inited     = false;
-    s_handler    = NULL;
+    s_head        = 0;
+    s_count       = 0;
+    s_total       = 0;
+    s_inited      = false;
+    s_handler     = NULL;
     s_handler_ctx = NULL;
 }
