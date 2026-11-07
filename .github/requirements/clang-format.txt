@@ -1,0 +1,8 @@
+# Pinned clang-format for the lint job (and for local use, see README.md "Lint").
+# Install with: pip install --require-hashes --only-binary=:all: -r .github/requirements/clang-format.txt
+# Hashes cover the Linux x86_64/aarch64 and macOS arm64/x86_64 wheels.
+clang-format==23.1.3 \
+    --hash=sha256:58bf1804216501669832a39f2415e14284337438a062ff564729792adec664ac \
+    --hash=sha256:072113527b49a9c0ab9058006d9fe20e583823e6482608a34e1883dd2c49ae7d \
+    --hash=sha256:79f53ac55434af6dda88eb90eeb65d903ff920c910f78041de41e3ca666dfba5 \
+    --hash=sha256:0b8e86cc5a870ca42989bd1ccfe5220fbab96e386922d0a8f0ca350db30593df

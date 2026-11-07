@@ -2,3 +2,7 @@
 # Local IDE / tooling (never commit)
 .specify/
 .vscode/
+
+# Host test build output
+test/host/build/
+.venv-lint/

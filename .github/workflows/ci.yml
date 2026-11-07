@@ -1,0 +1,105 @@
+name: Lint, Host Tests, Dependency Audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint (cppcheck, clang-format)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install cppcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends cppcheck
+          cppcheck --version
+
+      - name: cppcheck (src/, include/)
+        # Analyses the Kconfig-default configuration (the -D flags mirror the
+        # "default y" options in Kconfig). ESP-IDF and mbedTLS headers are not
+        # available outside the IDF container, so missingInclude and
+        # missingIncludeSystem are suppressed; they are "header not found"
+        # notices, not findings. Any real finding needs an inline
+        # `// cppcheck-suppress <id>` with a justification next to it.
+        run: |
+          cppcheck \
+            --enable=warning,style,performance,portability \
+            --std=c11 --language=c \
+            --check-level=exhaustive \
+            --inline-suppr \
+            --error-exitcode=1 \
+            --suppress=missingIncludeSystem \
+            --suppress=missingInclude \
+            -I include \
+            -DCONFIG_PRESIDIO_SECURITY_ENABLE=1 \
+            -DCONFIG_PRESIDIO_TLS_HARDENING=1 \
+            -DCONFIG_PRESIDIO_NVS_REDACTION=1 \
+            -DCONFIG_PRESIDIO_NVS_ENCRYPTION=1 \
+            -DCONFIG_PRESIDIO_BOOT_ENFORCEMENT=1 \
+            -DCONFIG_PRESIDIO_ANOMALY_DETECTION=1 \
+            -DCONFIG_PRESIDIO_INPUT_SANITIZATION=1 \
+            -DCONFIG_PRESIDIO_SECURITY_LOG=1 \
+            -q \
+            src include
+
+      - name: Install clang-format (pinned, hash-checked)
+        run: |
+          python3 -m venv "$RUNNER_TEMP/clang-format"
+          "$RUNNER_TEMP/clang-format/bin/pip" install --require-hashes --only-binary=:all: \
+            -r .github/requirements/clang-format.txt
+          "$RUNNER_TEMP/clang-format/bin/clang-format" --version
+
+      - name: clang-format check
+        # Style lives in .clang-format. Fix locally with the same pinned
+        # version: clang-format -i $(git ls-files '*.c' '*.h')
+        run: |
+          git ls-files -z '*.c' '*.h' \
+            | xargs -0 "$RUNNER_TEMP/clang-format/bin/clang-format" --dry-run --Werror
+
+  host-tests:
+    name: Host unit tests (gcc, ASan/UBSan)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install mbedTLS headers
+        # Headers only: presidio_tls.c needs the cipher-suite IDs. Nothing is
+        # linked against mbedTLS in the host build.
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libmbedtls-dev
+
+      - name: Build and run host tests
+        # Pure-logic modules only; see test/host/README.md for what is and is
+        # not covered. Hardware paths stay in the device test app.
+        run: make -C test/host test CC=gcc
+
+  dependency-audit:
+    name: Dependency audit (idf_component.yml)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Check component dependencies are pinned
+        # The manifest has no managed components today (only the ESP-IDF
+        # framework range), so there is nothing for an OSV scanner to resolve.
+        # This fails if a component dependency is added without an exact
+        # version or commit pin. It is not a vulnerability scan; the script
+        # header lists what it does not cover.
+        run: |
+          yq --version
+          bash .github/scripts/check-idf-deps.sh idf_component.yml

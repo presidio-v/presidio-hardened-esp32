@@ -3,6 +3,7 @@
 
 #include "esp_err.h"
 #include "mbedtls/ssl.h"
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {

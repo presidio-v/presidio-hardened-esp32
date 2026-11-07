@@ -32,6 +32,16 @@ When deploying with `presidio-hardened-esp32`:
 5. **Review Kconfig** settings before each release build
 6. **Keep dependencies updated** — Dependabot is configured for this repository
 
+## Continuous Integration
+
+Every push and pull request to `main` runs the ESP-IDF build matrix, CodeQL,
+cppcheck, a clang-format check, host unit tests under ASan/UBSan, and a
+dependency pin check on `idf_component.yml`. The component declares no managed
+dependencies besides the ESP-IDF framework itself, so there is no third-party
+component to scan; Dependabot keeps the GitHub Actions pins current. ESP-IDF
+(including its bundled mbedTLS) is not scanned by this repository's CI; track
+its advisories upstream and build against a patched IDF release.
+
 ## Software Development Lifecycle
 
 This repository is developed under the Presidio hardened-family SDLC. The public report
